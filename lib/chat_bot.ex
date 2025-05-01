@@ -1,10 +1,10 @@
-defmodule Telegram.ChatBot do
+defmodule Instex.ChatBot do
   @moduledoc ~S"""
-  Telegram Chat Bot behaviour.
+  Instex Chat Bot behaviour.
 
-  The `Telegram.ChatBot` module provides a stateful chatbot mechanism that manages bot instances
-  on a per-chat basis (`chat_id`). Unlike the `Telegram.Bot` behavior, which is stateless,
-  each conversation in `Telegram.ChatBot` is tied to a unique `chat_state`.
+  The `Instex.ChatBot` module provides a stateful chatbot mechanism that manages bot instances
+  on a per-chat basis (`chat_id`). Unlike the `Instex.Bot` behavior, which is stateless,
+  each conversation in `Instex.ChatBot` is tied to a unique `chat_state`.
 
   The `c:get_chat/2` callback is responsible for routing each incoming update to the correct
   chat session by returning the chat's identifier. If the chat is not yet recognized,
@@ -21,24 +21,24 @@ defmodule Telegram.ChatBot do
 
   ```elixir
   defmodule HelloBot do
-    use Telegram.ChatBot
+    use Instex.ChatBot
 
     # Session timeout set to 60 seconds
     @session_ttl 60 * 1_000
 
-    @impl Telegram.ChatBot
+    @impl Instex.ChatBot
     def init(_chat) do
       # Initialize state with a message counter set to 0
       count_state = 0
       {:ok, count_state, @session_ttl}
     end
 
-    @impl Telegram.ChatBot
+    @impl Instex.ChatBot
     def handle_update(%{"message" => %{"chat" => %{"id" => chat_id}}}, token, count_state) do
       # Increment the message count
       count_state = count_state + 1
 
-      Telegram.Api.request(token, "sendMessage",
+      Instex.Api.request(token, "sendMessage",
         chat_id: chat_id,
         text: "Hey! You sent me #{count_state} messages"
       )
@@ -52,17 +52,17 @@ defmodule Telegram.ChatBot do
       {:ok, count_state, @session_ttl}
     end
 
-    @impl Telegram.ChatBot
+    @impl Instex.ChatBot
     def handle_info(msg, _token, _chat_id, count_state) do
       # Handle direct erlang messages, if needed
 
       {:ok, count_state}
     end
 
-    @impl Telegram.ChatBot
+    @impl Instex.ChatBot
     def handle_timeout(token, chat_id, count_state) do
       # Send a "goodbye" message upon session timeout
-      Telegram.Api.request(token, "sendMessage",
+      Instex.Api.request(token, "sendMessage",
         chat_id: chat_id,
         text: "See you!"
       )
@@ -73,10 +73,10 @@ defmodule Telegram.ChatBot do
   ```
   """
 
-  alias Telegram.Bot.ChatBot.Chat
-  alias Telegram.Bot.ChatBot.Chat.Session
-  alias Telegram.Bot.Utils
-  alias Telegram.Types
+  alias Instex.Bot.ChatBot.Chat
+  alias Instex.Bot.ChatBot.Chat.Session
+  alias Instex.Bot.Utils
+  alias Instex.Types
 
   @type t :: module()
 
@@ -88,7 +88,7 @@ defmodule Telegram.ChatBot do
 
   ### Parameters:
 
-  - `chat`: the `t:Telegram.ChatBot.Chat.t/0` struct returned by `c:get_chat/2`.
+  - `chat`: the `t:Instex.ChatBot.Chat.t/0` struct returned by `c:get_chat/2`.
 
   ### Return values
 
@@ -97,7 +97,7 @@ defmodule Telegram.ChatBot do
 
   The `timeout` can be used to schedule actions after a certain period of inactivity.
   """
-  @callback init(chat :: Telegram.ChatBot.Chat.t()) ::
+  @callback init(chat :: Instex.ChatBot.Chat.t()) ::
               {:ok, initial_state :: chat_state()}
               | {:ok, initial_state :: chat_state(), timeout :: timeout()}
 
@@ -121,11 +121,11 @@ defmodule Telegram.ChatBot do
               | {:ok, next_chat_state :: chat_state(), timeout :: timeout()}
 
   @doc """
-  Handles incoming Telegram update events and processes them based on the current `chat_state`.
+  Handles incoming Instex update events and processes them based on the current `chat_state`.
 
   ### Parameters:
 
-  - `update`: the incoming Telegram [update](https://core.telegram.org/bots/api#update) event (e.g., a message, an inline query).
+  - `update`: the incoming Instex [update](https://core.telegram.org/bots/api#update) event (e.g., a message, an inline query).
   - `token`: the bot's authentication token, used to make API requests.
   - `chat_state`: the current state of the chat session.
 
@@ -211,54 +211,54 @@ defmodule Telegram.ChatBot do
       which contains fields such as text, sender, and chat.
     - For `inline_query` updates, the object is of type [`InlineQuery`](https://core.telegram.org/bots/api#inlinequery), containing fields like query and from.
 
-  Refer to the official Telegram Bot API [documentation](https://core.telegram.org/bots/api#update)
+  Refer to the official Instex Bot API [documentation](https://core.telegram.org/bots/api#update)
   for a complete list of update types.
 
   ### Return values:
 
-  - Returning `{:ok, %Telegram.ChatBot.Chat{id: id, metadata: %{}}}` will trigger
+  - Returning `{:ok, %Instex.ChatBot.Chat{id: id, metadata: %{}}}` will trigger
     the bot to spin up a new instance, which will manage the update as a full chat session.
     The instance will be uniquely identified by the return `id` and
-    `c:init/1` will be called with the returned `t:Telegram.ChatBot.Chat.t/0` struct.
+    `c:init/1` will be called with the returned `t:Instex.ChatBot.Chat.t/0` struct.
   - Returning `:ignore` will cause the update to be disregarded entirely.
 
   This callback is **optional**.
   If not implemented, the bot will dispatch updates of type [`Message`](https://core.telegram.org/bots/api#message).
   """
-  @callback get_chat(update_type :: String.t(), update :: Types.update()) :: {:ok, Telegram.ChatBot.Chat.t()} | :ignore
+  @callback get_chat(update_type :: String.t(), update :: Types.update()) :: {:ok, Instex.ChatBot.Chat.t()} | :ignore
 
   @optional_callbacks get_chat: 2, handle_resume: 1, handle_info: 4, handle_timeout: 3
 
   @doc false
   defmacro __using__(_use_opts) do
     quote location: :keep do
-      @behaviour Telegram.ChatBot
-      @behaviour Telegram.Bot.Dispatch
+      @behaviour Instex.ChatBot
+      @behaviour Instex.Bot.Dispatch
 
       require Logger
 
-      @impl Telegram.ChatBot
+      @impl Instex.ChatBot
       def get_chat(_, %{"chat" => %{"id" => chat_id} = chat}),
-        do: {:ok, %Telegram.ChatBot.Chat{id: chat_id, metadata: %{chat: chat}}}
+        do: {:ok, %Instex.ChatBot.Chat{id: chat_id, metadata: %{chat: chat}}}
 
       def get_chat(_, %{"message" => %{"chat" => %{"id" => chat_id} = chat}}),
-        do: {:ok, %Telegram.ChatBot.Chat{id: chat_id, metadata: %{chat: chat}}}
+        do: {:ok, %Instex.ChatBot.Chat{id: chat_id, metadata: %{chat: chat}}}
 
       def get_chat(_, _), do: :ignore
 
-      @impl Telegram.ChatBot
+      @impl Instex.ChatBot
       def handle_resume(chat_state) do
         {:ok, chat_state}
       end
 
-      @impl Telegram.ChatBot
+      @impl Instex.ChatBot
       def handle_info(msg, _token, _chat_id, chat_state) do
         Logger.error("#{inspect(__MODULE__)} received unexpected message in handle_info/4: #{inspect(msg)}~n")
 
         {:ok, chat_state}
       end
 
-      @impl Telegram.ChatBot
+      @impl Instex.ChatBot
       def handle_timeout(token, chat_id, chat_state) do
         {:stop, chat_state}
       end
@@ -275,7 +275,7 @@ defmodule Telegram.ChatBot do
         Supervisor.child_spec({Chat.Supervisor, {token, max_bot_concurrency}}, id: id)
       end
 
-      @impl Telegram.Bot.Dispatch
+      @impl Instex.Bot.Dispatch
       def dispatch_update(update, token) do
         Session.Server.handle_update(__MODULE__, token, update)
 
@@ -283,7 +283,7 @@ defmodule Telegram.ChatBot do
       end
 
       @doc """
-      Resumes a `Telegram.ChatBot` sessions.
+      Resumes a `Instex.ChatBot` sessions.
 
       Restores the chat session for the given `chat_id` using the previously saved `state`.
 
@@ -309,7 +309,7 @@ defmodule Telegram.ChatBot do
   This function allows you to look up the active process managing a particular chat session.
 
   Note: it is the user's responsibility to maintain and manage the mapping between
-  the custom session identifier (specific to the business logic) and the Telegram `chat_id`.
+  the custom session identifier (specific to the business logic) and the Instex `chat_id`.
 
   ### Return values:
 

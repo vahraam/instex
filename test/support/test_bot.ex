@@ -1,10 +1,10 @@
 defmodule Test.Bot do
   @moduledoc false
 
-  use Telegram.Bot
+  use Instex.Bot
 
-  @impl Telegram.Bot
+  @impl Instex.Bot
   def handle_update(_update, token) do
-    Telegram.Api.request(token, "testResponse")
+    Instex.Api.request(token, "testResponse")
   end
 end

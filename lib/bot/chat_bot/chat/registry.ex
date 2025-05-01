@@ -1,8 +1,8 @@
-defmodule Telegram.Bot.ChatBot.Chat.Registry do
+defmodule Instex.Bot.ChatBot.Chat.Registry do
   @moduledoc false
 
-  alias Telegram.Bot.Utils
-  alias Telegram.Types
+  alias Instex.Bot.Utils
+  alias Instex.Types
 
   @spec child_spec({Types.token()}) :: Supervisor.child_spec()
   def child_spec({token}) do

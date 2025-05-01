@@ -1,6 +1,6 @@
-defmodule Telegram.Poller do
+defmodule Instex.Poller do
   @moduledoc """
-  Telegram poller supervisor.
+  Instex poller supervisor.
 
   ## Usage
 
@@ -10,11 +10,11 @@ defmodule Telegram.Poller do
   bot_config = [
     token: Application.fetch_env!(:my_app, :token_counter_bot),
     max_bot_concurrency: Application.fetch_env!(:my_app, :max_bot_concurrency),
-    allowed_updates: []   # optional (refer to Telegram.Types.bot_opts())
+    allowed_updates: []   # optional (refer to Instex.Types.bot_opts())
   ]
 
   children = [
-    {Telegram.Poller, bots: [{MyApp.Bot, bot_config}]}
+    {Instex.Poller, bots: [{MyApp.Bot, bot_config}]}
     ...
   ]
 
@@ -23,8 +23,8 @@ defmodule Telegram.Poller do
   ```
   """
 
-  alias Telegram.Bot.Utils
-  alias Telegram.{Poller, Types}
+  alias Instex.Bot.Utils
+  alias Instex.{Poller, Types}
 
   use Supervisor
 
@@ -68,13 +68,13 @@ defmodule Telegram.Poller do
   end
 end
 
-defmodule Telegram.Poller.Task do
+defmodule Instex.Poller.Task do
   @moduledoc false
   @default_polling_timeout_s 30
 
-  alias Telegram.Bot.Dispatch
-  alias Telegram.Types
-  import Telegram.Utils, only: [retry: 1]
+  alias Instex.Bot.Dispatch
+  alias Instex.Types
+  import Instex.Utils, only: [retry: 1]
   require Logger
 
   use Task, restart: :permanent
@@ -119,11 +119,11 @@ defmodule Telegram.Poller.Task do
   defp set_polling(token) do
     Logger.info("Checking webhook mode is not active...")
 
-    {:ok, %{"url" => url}} = retry(fn -> Telegram.Api.request(token, "getWebhookInfo") end)
+    {:ok, %{"url" => url}} = retry(fn -> Instex.Api.request(token, "getWebhookInfo") end)
 
     if url != "" do
       Logger.info("Found active webhook (url: #{url})")
-      {:ok, true} = retry(fn -> Telegram.Api.request(token, "deleteWebhook") end)
+      {:ok, true} = retry(fn -> Instex.Api.request(token, "deleteWebhook") end)
       Logger.info("Webhook deleted")
     end
   end
@@ -141,14 +141,14 @@ defmodule Telegram.Poller.Task do
     opts =
       [timeout: conf_get_updates_poll_timeout_s(), allowed_updates: {:json, context.allowed_updates}] ++ opts_offset
 
-    case Telegram.Api.request(context.token, "getUpdates", opts) do
+    case Instex.Api.request(context.token, "getUpdates", opts) do
       {:ok, updates} ->
         updates
 
       # coveralls-ignore-start
 
       {:error, :timeout} ->
-        Logger.notice("Telegram.Api.request 'getUpdates' timed out. Retrying...")
+        Logger.notice("Instex.Api.request 'getUpdates' timed out. Retrying...")
 
         Logger.notice("""
         If you see this error consistently, check you configuration:
@@ -163,7 +163,7 @@ defmodule Telegram.Poller.Task do
         wait_updates(context)
 
       error ->
-        raise "Telegram.Api.request 'getUpdates' error: #{inspect(error)}"
+        raise "Instex.Api.request 'getUpdates' error: #{inspect(error)}"
 
         # coveralls-ignore-stop
     end

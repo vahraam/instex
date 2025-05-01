@@ -1,8 +1,8 @@
-defmodule Telegram.ChatBot.Chat do
+defmodule Instex.ChatBot.Chat do
   @moduledoc """
-  A struct that represents a chat extracted from a Telegram update.
+  A struct that represents a chat extracted from a Instex update.
   Currently the only required field is `id`, any other data you may want to pass to
-  `c:Telegram.ChatBot.init/1` should be included under the `metadata` field.
+  `c:Instex.ChatBot.init/1` should be included under the `metadata` field.
   """
 
   @type t() :: %__MODULE__{

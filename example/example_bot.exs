@@ -10,9 +10,9 @@ Mix.install(
 )
 
 defmodule SleepBot do
-  use Telegram.Bot
+  use Instex.Bot
 
-  @impl Telegram.Bot
+  @impl Instex.Bot
   def handle_update(
         %{"message" => %{"text" => "/sleep" <> seconds_arg, "chat" => %{"id" => chat_id}, "message_id" => message_id}},
         token
@@ -37,7 +37,7 @@ defmodule Command do
   require Logger
 
   def sleep(token, chat_id, message_id, seconds) do
-    Telegram.Api.request(token, "sendMessage",
+    Instex.Api.request(token, "sendMessage",
       chat_id: chat_id,
       reply_to_message_id: message_id,
       text: "Sleeping '#{seconds}'s"
@@ -45,7 +45,7 @@ defmodule Command do
 
     Process.sleep(seconds * 1_000)
 
-    Telegram.Api.request(token, "sendMessage",
+    Instex.Api.request(token, "sendMessage",
       chat_id: chat_id,
       reply_to_message_id: message_id,
       text: "Awake!"
@@ -57,7 +57,7 @@ defmodule Command do
 
     case update do
       %{"message" => %{"message_id" => message_id, "chat" => %{"id" => chat_id}}} ->
-        Telegram.Api.request(token, "sendMessage",
+        Instex.Api.request(token, "sendMessage",
           chat_id: chat_id,
           reply_to_message_id: message_id,
           parse_mode: "MarkdownV2",
@@ -81,7 +81,7 @@ end
   Supervisor.start_link(
     [
       {Finch, name: Adapter.Finch},
-      {Telegram.Poller, bots: [{SleepBot, token: token, max_bot_concurrency: 1_000}]}
+      {Instex.Poller, bots: [{SleepBot, token: token, max_bot_concurrency: 1_000}]}
     ],
     strategy: :one_for_one
   )

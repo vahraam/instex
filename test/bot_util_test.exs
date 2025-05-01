@@ -1,6 +1,6 @@
-defmodule Test.Telegram.Bot.Utils do
+defmodule Test.Instex.Bot.Utils do
   use ExUnit.Case, async: true
-  alias Telegram.Bot.Utils
+  alias Instex.Bot.Utils
 
   test "get_from_username" do
     assert nil == Utils.get_from_username(%{"something" => "else"})

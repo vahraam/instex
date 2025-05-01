@@ -1,9 +1,9 @@
-defmodule Telegram.Types do
+defmodule Instex.Types do
   @moduledoc """
-  Telegram types
+  Instex types
   """
 
-  alias Telegram.Bot.Dispatch
+  alias Instex.Bot.Dispatch
 
   @default_max_bot_concurrency :infinity
   @default_allowed_updates []

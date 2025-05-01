@@ -12,21 +12,21 @@ Mix.install(
 defmodule CountChatBot do
   require Logger
 
-  use Telegram.ChatBot
+  use Instex.ChatBot
 
   @session_ttl 60 * 1_000
 
-  @impl Telegram.ChatBot
+  @impl Instex.ChatBot
   def init(_chat) do
     count_state = 0
     {:ok, count_state, @session_ttl}
   end
 
-  @impl Telegram.ChatBot
+  @impl Instex.ChatBot
   def handle_update(%{"message" => %{"chat" => %{"id" => chat_id}}}, token, count_state) do
     count_state = count_state + 1
 
-    Telegram.Api.request(token, "sendMessage",
+    Instex.Api.request(token, "sendMessage",
       chat_id: chat_id,
       text: "Hey! You sent me #{count_state} messages"
     )
@@ -52,7 +52,7 @@ end
   Supervisor.start_link(
     [
       {Finch, name: Adapter.Finch},
-      {Telegram.Poller, bots: [{CountChatBot, token: token, max_bot_concurrency: 1_000}]}
+      {Instex.Poller, bots: [{CountChatBot, token: token, max_bot_concurrency: 1_000}]}
     ],
     strategy: :one_for_one
   )

@@ -1,8 +1,8 @@
-defmodule Test.Telegram.Api do
+defmodule Test.Instex.Api do
   use ExUnit.Case, async: true
   import Test.Utils.Const
 
-  describe "Test Telegram.Api.request" do
+  describe "Test Instex.Api.request" do
     test "response ok" do
       url = tg_url(tg_token(), tg_method())
       result = %{"something" => [1, 2, 3]}
@@ -12,7 +12,7 @@ defmodule Test.Telegram.Api do
         Tesla.Mock.json(response, status: 200)
       end)
 
-      assert {:ok, result} == Telegram.Api.request(tg_token(), tg_method())
+      assert {:ok, result} == Instex.Api.request(tg_token(), tg_method())
     end
 
     test "response not ok" do
@@ -24,7 +24,7 @@ defmodule Test.Telegram.Api do
         Tesla.Mock.json(response, status: 200)
       end)
 
-      assert {:error, description} == Telegram.Api.request(tg_token(), tg_method())
+      assert {:error, description} == Instex.Api.request(tg_token(), tg_method())
     end
 
     test "response http error" do
@@ -36,7 +36,7 @@ defmodule Test.Telegram.Api do
       end)
 
       assert {:error, {:http_error, status}} ==
-               Telegram.Api.request(tg_token(), tg_method())
+               Instex.Api.request(tg_token(), tg_method())
     end
 
     test "response 429 ('too many requests' throttling)" do
@@ -52,7 +52,7 @@ defmodule Test.Telegram.Api do
 
       api_max_retries = Application.fetch_env!(:telegram, :api_max_retries)
 
-      assert {:error, ^error_description} = Telegram.Api.request(tg_token(), tg_method())
+      assert {:error, ^error_description} = Instex.Api.request(tg_token(), tg_method())
 
       Enum.each(1..(api_max_retries + 1), fn _ ->
         assert_receive :test_429
@@ -68,7 +68,7 @@ defmodule Test.Telegram.Api do
         {:error, :reason}
       end)
 
-      assert {:error, :reason} == Telegram.Api.request(tg_token(), tg_method())
+      assert {:error, :reason} == Instex.Api.request(tg_token(), tg_method())
     end
 
     test "request with parameters" do
@@ -83,7 +83,7 @@ defmodule Test.Telegram.Api do
       end)
 
       assert {:ok, result} ==
-               Telegram.Api.request(tg_token(), tg_method(), parameters)
+               Instex.Api.request(tg_token(), tg_method(), parameters)
     end
 
     test "request with 'file' parameter" do
@@ -109,7 +109,7 @@ defmodule Test.Telegram.Api do
       end)
 
       assert {:ok, result} ==
-               Telegram.Api.request(tg_token(), tg_method(), parameters)
+               Instex.Api.request(tg_token(), tg_method(), parameters)
     end
 
     test "request with 'file_content' parameter" do
@@ -135,7 +135,7 @@ defmodule Test.Telegram.Api do
       end)
 
       assert {:ok, result} ==
-               Telegram.Api.request(tg_token(), tg_method(), parameters)
+               Instex.Api.request(tg_token(), tg_method(), parameters)
     end
 
     test "request with 'json_markup' parameter" do
@@ -150,11 +150,11 @@ defmodule Test.Telegram.Api do
       end)
 
       assert {:ok, result} ==
-               Telegram.Api.request(tg_token(), tg_method(), parameters)
+               Instex.Api.request(tg_token(), tg_method(), parameters)
     end
   end
 
-  describe "Test Telegram.Api.file" do
+  describe "Test Instex.Api.file" do
     test "ok" do
       method = :get
       token = tg_token()
@@ -170,7 +170,7 @@ defmodule Test.Telegram.Api do
         }
       end)
 
-      assert {:ok, file_content} == Telegram.Api.file(token, file_path)
+      assert {:ok, file_content} == Instex.Api.file(token, file_path)
     end
 
     test "http adapter error" do
@@ -183,7 +183,7 @@ defmodule Test.Telegram.Api do
         {:error, :reason}
       end)
 
-      assert {:error, :reason} == Telegram.Api.file(token, file_path)
+      assert {:error, :reason} == Instex.Api.file(token, file_path)
     end
 
     test "http error" do
@@ -196,7 +196,7 @@ defmodule Test.Telegram.Api do
         %Tesla.Env{status: 404}
       end)
 
-      assert {:error, {:http_error, 404}} == Telegram.Api.file(token, file_path)
+      assert {:error, {:http_error, 404}} == Instex.Api.file(token, file_path)
     end
   end
 end

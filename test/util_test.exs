@@ -1,6 +1,6 @@
-defmodule Test.Telegram.Utils do
+defmodule Test.Instex.Utils do
   use ExUnit.Case, async: true
-  alias Telegram.Utils
+  alias Instex.Utils
 
   require Logger
 

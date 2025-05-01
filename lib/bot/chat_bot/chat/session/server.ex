@@ -1,10 +1,10 @@
-defmodule Telegram.Bot.ChatBot.Chat.Session.Server do
+defmodule Instex.Bot.ChatBot.Chat.Session.Server do
   @moduledoc false
 
   use GenServer, restart: :transient
   require Logger
-  alias Telegram.Bot.ChatBot.Chat
-  alias Telegram.{ChatBot, Types}
+  alias Instex.Bot.ChatBot.Chat
+  alias Instex.{ChatBot, Types}
 
   defmodule State do
     @moduledoc false
@@ -24,7 +24,7 @@ defmodule Telegram.Bot.ChatBot.Chat.Session.Server do
 
   @spec resume(ChatBot.t(), Types.token(), String.t(), term()) :: :ok | {:error, :already_started | :max_children}
   def resume(chatbot_behaviour, token, chat_id, bot_state) do
-    chat = %Telegram.ChatBot.Chat{id: chat_id}
+    chat = %Instex.ChatBot.Chat{id: chat_id}
 
     with {:lookup, {:error, :not_found}} <- {:lookup, Chat.Registry.lookup(token, chat_id)},
          {:start, {:ok, _server}} <- {:start, start_chat_session_server(chatbot_behaviour, token, chat, bot_state)} do
@@ -58,7 +58,7 @@ defmodule Telegram.Bot.ChatBot.Chat.Session.Server do
   end
 
   @impl GenServer
-  def init({chatbot_behaviour, token, %Telegram.ChatBot.Chat{} = chat, bot_state}) when bot_state != nil do
+  def init({chatbot_behaviour, token, %Instex.ChatBot.Chat{} = chat, bot_state}) when bot_state != nil do
     Logger.metadata(bot: chatbot_behaviour, chat_id: chat.id)
 
     state = %State{token: token, chatbot_behaviour: chatbot_behaviour, chat_id: chat.id, bot_state: bot_state}
@@ -74,7 +74,7 @@ defmodule Telegram.Bot.ChatBot.Chat.Session.Server do
     end
   end
 
-  def init({chatbot_behaviour, token, %Telegram.ChatBot.Chat{} = chat, nil}) do
+  def init({chatbot_behaviour, token, %Instex.ChatBot.Chat{} = chat, nil}) do
     Logger.metadata(bot: chatbot_behaviour, chat_id: chat.id)
 
     state = %State{token: token, chatbot_behaviour: chatbot_behaviour, chat_id: chat.id, bot_state: nil}
@@ -119,7 +119,7 @@ defmodule Telegram.Bot.ChatBot.Chat.Session.Server do
     chatbot_behaviour.get_chat(update_type, Map.get(update, update_type))
   end
 
-  defp get_chat_session_server(chatbot_behaviour, token, %Telegram.ChatBot.Chat{} = chat) do
+  defp get_chat_session_server(chatbot_behaviour, token, %Instex.ChatBot.Chat{} = chat) do
     Chat.Registry.lookup(token, chat.id)
     |> case do
       {:ok, _server} = ok ->
@@ -130,7 +130,7 @@ defmodule Telegram.Bot.ChatBot.Chat.Session.Server do
     end
   end
 
-  defp start_chat_session_server(chatbot_behaviour, token, %Telegram.ChatBot.Chat{} = chat, bot_state \\ nil) do
+  defp start_chat_session_server(chatbot_behaviour, token, %Instex.ChatBot.Chat{} = chat, bot_state \\ nil) do
     child_spec = {__MODULE__, {chatbot_behaviour, token, chat, bot_state}}
 
     Chat.Session.Supervisor.start_child(child_spec, token)

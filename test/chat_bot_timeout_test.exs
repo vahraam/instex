@@ -1,4 +1,4 @@
-defmodule Test.Telegram.ChatBotTimeout do
+defmodule Test.Instex.ChatBotTimeout do
   use ExUnit.Case, async: false
 
   alias Test.Webhook
@@ -62,7 +62,7 @@ defmodule Test.Telegram.ChatBotTimeout do
   defp setup_test_bot(_context) do
     config = [set_webhook: false, host: "host.com"]
     bots = [{Test.ChatBotTimeout, [token: tg_token(), max_bot_concurrency: 1]}]
-    start_supervised!({Telegram.Webhook, config: config, bots: bots})
+    start_supervised!({Instex.Webhook, config: config, bots: bots})
 
     :ok
   end

@@ -1,11 +1,11 @@
-defmodule Telegram.Mixfile do
+defmodule Instex.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :telegram,
-      version: "2.1.0",
-      elixir: "~> 1.12",
+      app: :instex,
+      version: "0.0.1",
+      elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       preferred_cli_env: [
         coveralls: :test,
@@ -42,7 +42,7 @@ defmodule Telegram.Mixfile do
       {:bandit, "~> 1.0", optional: true},
       # HTTP client
       {:tesla, "~> 1.0"},
-      {:hackney, "~> 1.18", only: :test},
+      {:hackney, "~> 1.18"},
       # tesla json encoder
       {:jason, "~> 1.0"},
       # coverage
@@ -57,7 +57,7 @@ defmodule Telegram.Mixfile do
 
   defp docs do
     [
-      source_url: "https://github.com/visciang/telegram",
+      source_url: "https://github.com/vahraam/instex",
       extras: ["README.md"]
     ]
   end

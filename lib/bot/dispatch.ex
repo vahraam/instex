@@ -1,9 +1,9 @@
-defmodule Telegram.Bot.Dispatch do
+defmodule Instex.Bot.Dispatch do
   @moduledoc """
   Dispatch behaviour
   """
 
-  alias Telegram.Types
+  alias Instex.Types
 
   @type t :: module()
 

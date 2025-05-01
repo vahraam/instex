@@ -1,4 +1,4 @@
-defmodule Telegram.Client do
+defmodule Instex.Client do
   @moduledoc false
 
   @type file_path :: String.t()
@@ -18,7 +18,7 @@ defmodule Telegram.Client do
     max_retries: @api_max_retries,
     should_retry: fn
       {:ok, %{status: 429}} ->
-        Logger.warning("Telegram API throttling, HTTP 429 'Too Many Requests'")
+        Logger.warning("Instex API throttling, HTTP 429 'Too Many Requests'")
         true
 
       {:ok, _} ->
@@ -29,7 +29,7 @@ defmodule Telegram.Client do
     end
 
   @doc false
-  @spec request(Telegram.Types.token(), Telegram.Types.method(), body()) :: {:ok, term()} | {:error, term()}
+  @spec request(Instex.Types.token(), Instex.Types.method(), body()) :: {:ok, term()} | {:error, term()}
   def request(token, method, body) do
     "/bot#{token}/#{method}"
     |> post(body)
@@ -37,7 +37,7 @@ defmodule Telegram.Client do
   end
 
   @doc false
-  @spec file(Telegram.Types.token(), file_path()) :: {:ok, Tesla.Env.body()} | {:error, term()}
+  @spec file(Instex.Types.token(), file_path()) :: {:ok, Tesla.Env.body()} | {:error, term()}
   def file(token, file_path) do
     "/file/bot#{token}/#{file_path}"
     |> get()

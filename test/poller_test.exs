@@ -1,11 +1,11 @@
-defmodule Test.Telegram.Poller do
+defmodule Test.Instex.Poller do
   use ExUnit.Case, async: false
   import Test.Utils.{Const, Mock}
 
   defmodule TestBotBehaviour do
-    use Telegram.Bot
+    use Instex.Bot
 
-    @impl Telegram.Bot
+    @impl Instex.Bot
     def handle_update(update, _token) do
       assert %{"message" => %{"text" => "/test"}} = update
     end
@@ -121,7 +121,7 @@ defmodule Test.Telegram.Poller do
 
   defp setup_test_bot(_context) do
     bots = [{TestBotBehaviour, [token: tg_token(), max_bot_concurrency: 1]}]
-    start_supervised!({Telegram.Poller, bots: bots})
+    start_supervised!({Instex.Poller, bots: bots})
 
     :ok
   end

@@ -1,6 +1,6 @@
-defmodule Telegram.Api do
+defmodule Instex.Api do
   @moduledoc """
-  Telegram Bot API - HTTP-based interface
+  Instex Bot API - HTTP-based interface
   """
 
   @type parameter_name :: atom() | String.t()
@@ -16,7 +16,7 @@ defmodule Telegram.Api do
   @type request_result :: {:ok, term()} | {:error, term()}
 
   @doc """
-  Send a Telegram Bot API request.
+  Send a Instex Bot API request.
 
   The request `parameters` map to the bots API parameters.
 
@@ -26,14 +26,14 @@ defmodule Telegram.Api do
 
   Reference: [BOT Api](https://core.telegram.org/bots/api)
   """
-  @spec request(Telegram.Types.token(), Telegram.Types.method(), parameters()) :: request_result()
+  @spec request(Instex.Types.token(), Instex.Types.method(), parameters()) :: request_result()
   def request(token, method, parameters \\ []) do
     body =
       parameters
       |> do_json_serialized_params()
       |> do_body()
 
-    Telegram.Client.request(token, method, body)
+    Instex.Client.request(token, method, body)
   end
 
   @doc """
@@ -45,20 +45,20 @@ defmodule Telegram.Api do
 
   ```elixir
   # send a photo
-  {:ok, res} = Telegram.Api.request(token, "sendPhoto", chat_id: 12345, photo: {:file, "example/photo.jpg"})
+  {:ok, res} = Instex.Api.request(token, "sendPhoto", chat_id: 12345, photo: {:file, "example/photo.jpg"})
   # pick the 'file_obj' with the desired resolution
   [file_obj | _] = res["photo"]
   # get the 'file_id'
   file_id = file_obj["file_id"]
 
   # obtain the 'file_path' to download the file identified by 'file_id'
-  {:ok, %{"file_path" => file_path}} = Telegram.Api.request(token, "getFile", file_id: file_id)
-  {:ok, file} = Telegram.Api.file(token, file_path)
+  {:ok, %{"file_path" => file_path}} = Instex.Api.request(token, "getFile", file_id: file_id)
+  {:ok, file} = Instex.Api.file(token, file_path)
   ```
   """
-  @spec file(Telegram.Types.token(), String.t()) :: request_result()
+  @spec file(Instex.Types.token(), String.t()) :: request_result()
   def file(token, file_path) do
-    Telegram.Client.file(token, file_path)
+    Instex.Client.file(token, file_path)
   end
 
   defp do_body(parameters) do

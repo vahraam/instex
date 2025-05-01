@@ -1,4 +1,4 @@
-defmodule Telegram.Utils do
+defmodule Instex.Utils do
   @moduledoc false
 
   require Logger

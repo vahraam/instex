@@ -1,9 +1,9 @@
-defmodule Telegram.Bot.ChatBot.Chat.Session.Supervisor do
+defmodule Instex.Bot.ChatBot.Chat.Session.Supervisor do
   @moduledoc false
 
   use DynamicSupervisor
-  alias Telegram.Bot.Utils
-  alias Telegram.Types
+  alias Instex.Bot.Utils
+  alias Instex.Types
 
   @spec start_link({Types.token(), Types.max_bot_concurrency()}) :: Supervisor.on_start()
   def start_link({token, max_bot_concurrency}) do

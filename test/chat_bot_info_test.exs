@@ -1,4 +1,4 @@
-defmodule Test.Telegram.ChatBotInfo do
+defmodule Test.Instex.ChatBotInfo do
   use ExUnit.Case, async: false
 
   alias Test.Webhook
@@ -28,7 +28,7 @@ defmodule Test.Telegram.ChatBotInfo do
                false
              )
 
-    {:ok, pid} = Telegram.ChatBot.lookup(tg_token(), chat_id)
+    {:ok, pid} = Instex.ChatBot.lookup(tg_token(), chat_id)
 
     send(pid, {:test, self()})
 
@@ -38,7 +38,7 @@ defmodule Test.Telegram.ChatBotInfo do
   defp setup_test_bot(_context) do
     config = [set_webhook: false, host: "host.com"]
     bots = [{Test.ChatBotInfo, [token: tg_token(), max_bot_concurrency: 1]}]
-    start_supervised!({Telegram.Webhook, config: config, bots: bots})
+    start_supervised!({Instex.Webhook, config: config, bots: bots})
 
     :ok
   end

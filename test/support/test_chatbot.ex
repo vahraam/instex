@@ -1,25 +1,25 @@
 defmodule Test.ChatBot do
   @moduledoc false
 
-  use Telegram.ChatBot
+  use Instex.ChatBot
 
-  @impl Telegram.ChatBot
+  @impl Instex.ChatBot
   def init(_chat) do
     count_state = 0
     {:ok, count_state}
   end
 
-  @impl Telegram.ChatBot
+  @impl Instex.ChatBot
   def handle_resume({test_pid, state}) do
     send(test_pid, :resume)
     {:ok, state}
   end
 
-  @impl Telegram.ChatBot
+  @impl Instex.ChatBot
   def handle_update(%{"message" => %{"text" => "/count", "chat" => %{"id" => chat_id}}}, token, count_state) do
     count_state = count_state + 1
 
-    Telegram.Api.request(token, "testResponse",
+    Instex.Api.request(token, "testResponse",
       chat_id: chat_id,
       text: "#{count_state}"
     )
@@ -27,9 +27,9 @@ defmodule Test.ChatBot do
     {:ok, count_state}
   end
 
-  @impl Telegram.ChatBot
+  @impl Instex.ChatBot
   def handle_update(%{"message" => %{"text" => "/stop", "chat" => %{"id" => chat_id}}}, token, count_state) do
-    Telegram.Api.request(token, "testResponse",
+    Instex.Api.request(token, "testResponse",
       chat_id: chat_id,
       text: "Bye!"
     )

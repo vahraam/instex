@@ -1,6 +1,6 @@
-defmodule Telegram.Webhook do
+defmodule Instex.Webhook do
   @moduledoc """
-  Telegram Webhook supervisor.
+  Instex Webhook supervisor.
 
   This modules can the used to start a webserver exposing a webhoook endpoint
   where the telegram server can push updates for your BOT.
@@ -13,19 +13,19 @@ defmodule Telegram.Webhook do
 
   Two `Plug` compatible webserver are supported:
 
-  - `Telegram.WebServer.Bandit` (default): use `Bandit`
-  - `Telegram.WebServer.Cowboy`: use `Plug.Cowboy`
+  - `Instex.WebServer.Bandit` (default): use `Bandit`
+  - `Instex.WebServer.Cowboy`: use `Plug.Cowboy`
 
   You should configure the desired webserver adapter in you app configuration:
 
   ```elixir
   config :telegram,
-    webserver: Telegram.WebServer.Bandit
+    webserver: Instex.WebServer.Bandit
 
   # OR
 
   config :telegram,
-    webserver: Telegram.WebServer.Cowboy
+    webserver: Instex.WebServer.Cowboy
   ```
 
   and include in you dependencies one of:
@@ -51,11 +51,11 @@ defmodule Telegram.Webhook do
 
   bot_config = [
     token: Application.fetch_env!(:my_app, :token_counter_bot),
-    allowed_updates: []  # optional (refer to Telegram.Types.bot_opts())
+    allowed_updates: []  # optional (refer to Instex.Types.bot_opts())
   ]
 
   children = [
-    {Telegram.Webhook, config: webhook_config, bots: [{MyApp.Bot, bot_config}]}
+    {Instex.Webhook, config: webhook_config, bots: [{MyApp.Bot, bot_config}]}
     ...
   ]
 
@@ -87,11 +87,11 @@ defmodule Telegram.Webhook do
 
   bot_config = [
     token: Application.fetch_env!(:my_app, :token_counter_bot),
-    allowed_updates: []  # optional (refer to Telegram.Types.bot_opts())
+    allowed_updates: []  # optional (refer to Instex.Types.bot_opts())
   ]
 
   children = [
-    {Telegram.Webhook, config: webhook_config, bots: [{MyApp.Bot, bot_config}]}
+    {Instex.Webhook, config: webhook_config, bots: [{MyApp.Bot, bot_config}]}
     ...
   ]
 
@@ -108,14 +108,14 @@ defmodule Telegram.Webhook do
     # ... my app routes ...
 
     post "/__telegram_webhook__/:token" do
-      Telegram.Webhook.post_webhook(conn, token)
+      Instex.Webhook.post_webhook(conn, token)
     end
   end
   ```
   """
 
-  alias Telegram.Types
-  import Telegram.Utils, only: [retry: 1]
+  alias Instex.Types
+  import Instex.Utils, only: [retry: 1]
   require Logger
 
   use Supervisor
@@ -174,6 +174,8 @@ defmodule Telegram.Webhook do
         {token, bot_behaviour_mod}
       end)
 
+
+
     :persistent_term.put({__MODULE__, :bot_routing_map}, bot_routing_map)
 
     bot_specs
@@ -181,7 +183,7 @@ defmodule Telegram.Webhook do
       token = Keyword.fetch!(opts, :token)
       allowed_updates = Keyword.get(opts, :allowed_updates, [])
 
-      url = %URI{scheme: scheme, host: host, path: "/__telegram_webhook__/#{token}", port: port} |> to_string()
+      url = %URI{scheme: scheme, host: host, path: "/__instagram_webhook__", port: port} |> to_string()
 
       Logger.info("Running in webhook mode #{url}", bot: bot_behaviour_mod, token: token)
 
@@ -195,7 +197,7 @@ defmodule Telegram.Webhook do
     end)
 
     webserver_specs =
-      case Application.get_env(:telegram, :webserver, Telegram.WebServer.Bandit) do
+      case Application.get_env(:telegram, :webserver, Instex.WebServer.Bandit) do
         # coveralls-ignore-start
         nil ->
           []
@@ -209,6 +211,8 @@ defmodule Telegram.Webhook do
 
     children = bot_specs ++ webserver_specs
 
+    dbg(children)
+
     Supervisor.init(children, strategy: :one_for_one)
   end
 
@@ -216,7 +220,7 @@ defmodule Telegram.Webhook do
 
   defp set_webhook(token, url, max_connections, allowed_updates) do
     opts = [url: url, max_connections: max_connections, allowed_updates: {:json, allowed_updates}]
-    {:ok, _} = retry(fn -> Telegram.Api.request(token, "setWebhook", opts) end)
+    {:ok, _} = retry(fn -> Instex.Api.request(token, "setWebhook", opts) end)
   end
 
   # coveralls-ignore-stop
@@ -232,14 +236,15 @@ defmodule Telegram.Webhook do
     # ... my app routes ...
 
     post "/__telegram_webhook__/:token" do
-      Telegram.Webhook.post_webhook(conn, token)
+      Instex.Webhook.post_webhook(conn, token)
     end
   end
   ```
   """
   @spec post_webhook(Plug.Conn.t(), Types.token()) :: Plug.Conn.t()
   def post_webhook(%Plug.Conn{} = conn, token) do
-    bot_routing_map = :persistent_term.get({Telegram.Webhook, :bot_routing_map})
+
+    bot_routing_map = :persistent_term.get({Instex.Webhook, :bot_routing_map})
 
     with {:read_update, {:ok, update, conn}} <- {:read_update, read_update(conn)},
          {:routing, {:ok, bot_dispatch_behaviour}} <- {:routing, Map.fetch(bot_routing_map, token)} do
@@ -259,17 +264,63 @@ defmodule Telegram.Webhook do
     end
   end
 
+
+  def events(%Plug.Conn{params: params} = conn) do
+
+    # Instex.Webhook.Parser.parse_webhook_entry(params)
+
+    # Plug.Conn.send_resp(conn, :ok, "")
+    #
+
+
+    # bot_routing_map = :persistent_term.get({Instex.Webhook, :bot_routing_map})
+
+
+
+    with {:read_update, {:ok, update, conn}} <- {:read_update, read_update(conn)} do
+        #  {:routing, {:ok, bot_dispatch_behaviour}} <- {:routing, Map.fetch(bot_routing_map, token)} do
+      # Logger.debug("received update: #{inspect(update)}", bot: inspect(bot_dispatch_behaviour))
+      # bot_dispatch_behaviour.dispatch_update(update, token)
+
+
+
+      Instex.Struct.WebhookEvent.parse(update)
+      |> dbg()
+
+
+
+
+
+      Plug.Conn.send_resp(conn, :ok, "")
+    else
+      # coveralls-ignore-start
+
+      {:read_update, _} ->
+        Plug.Conn.send_resp(conn, :bad_request, "")
+
+      {:routing, :error} ->
+        Plug.Conn.send_resp(conn, :not_found, "")
+
+        # coveralls-ignore-stop
+    end
+
+  end
+
+  defp verify_webhook(%Plug.Conn{params: %{"hub.challenge" => challenge_code} = _params} = conn) do
+    Plug.Conn.send_resp(conn, :ok, challenge_code)
+  end
+
   # coveralls-ignore-start
 
   defp read_update(%Plug.Conn{body_params: %Plug.Conn.Unfetched{}} = conn) do
     with {:read, {:ok, body, conn}} <- {:read, Plug.Conn.read_body(conn)},
-         {:decode, {:ok, update}} <- {:decode, Jason.decode(body)} do
+         {:parse, {:ok, update}} <- {:parse, Instex.Webhook.Parser.parse_webhook_entry(body)} do
       {:ok, update, conn}
     else
       {:read, error} ->
         {:error, error}
 
-      {:decode, error} ->
+      {:parse, error} ->
         error
     end
   end
@@ -281,7 +332,7 @@ defmodule Telegram.Webhook do
   end
 end
 
-defmodule Telegram.Webhook.Router do
+defmodule Instex.Webhook.Router do
   @moduledoc false
 
   require Logger
@@ -292,8 +343,13 @@ defmodule Telegram.Webhook.Router do
   plug Plug.Parsers, parsers: [:json], pass: ["*/*"], json_decoder: Jason
   plug :dispatch
 
-  post "/__telegram_webhook__/:token" do
-    Telegram.Webhook.post_webhook(conn, token)
+
+  get "/__instagram_webhook__" do
+    Instex.Webhook.verify_webhook(conn)
+  end
+
+  post "/__instagram_webhook__" do
+    Instex.Webhook.events(conn)
   end
 
   # coveralls-ignore-start

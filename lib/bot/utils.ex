@@ -1,9 +1,9 @@
-defmodule Telegram.Bot.Utils do
+defmodule Instex.Bot.Utils do
   @moduledoc """
   Bot utilities
   """
 
-  alias Telegram.Types
+  alias Instex.Types
 
   @doc """
   Process name atom maker.
