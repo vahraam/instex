@@ -306,7 +306,7 @@ defmodule Instex.Webhook do
 
   end
 
-  defp verify_webhook(%Plug.Conn{params: %{"hub.challenge" => challenge_code} = _params} = conn) do
+  def verify_webhook(%Plug.Conn{params: %{"hub.challenge" => challenge_code} = _params} = conn) do
     Plug.Conn.send_resp(conn, :ok, challenge_code)
   end
 
