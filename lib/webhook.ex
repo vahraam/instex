@@ -283,8 +283,8 @@ defmodule Instex.Webhook do
       # bot_dispatch_behaviour.dispatch_update(update, token)
 
 
-
-      Instex.Struct.WebhookEvent.builder(update)
+      update
+      |> Instex.Struct.WebhookEvent.builder()
       |> dbg()
 
 
