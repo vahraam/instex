@@ -284,7 +284,7 @@ defmodule Instex.Webhook do
 
 
 
-      Instex.Struct.WebhookEvent.parse(update)
+      Instex.Struct.WebhookEvent.builder(update)
       |> dbg()
 
 

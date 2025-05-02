@@ -1,34 +1,19 @@
 defmodule Instex.Struct.Change.Value do
+  use Instex.Struct.Schema
 
-  defstruct [
-    message: %Instex.Struct.Message{},
-    recipient: %Instex.Struct.User{},
-    sender: %Instex.Struct.User{},
-    timestamp: nil
-  ]
-
-
-
-  @type t :: %__MODULE__{
-    message: Instex.Struct.Message.t(),
-    recipient: Instex.Struct.User.t(),
-    sender: Instex.Struct.User.t(),
-    timestamp: NaiveDateTime.t(),
-  }
-
-  @spec parse(map()) :: {:ok, __MODULE__.t()} | {:error, :invalid}
-  def parse(%{"message" => message, "recipient" => recipient, "sender" => sender, "timestamp" => timestamp} = _map) do
-    with {:ok, parsed_message} <- Instex.Struct.Message.parse(message),
-    {:ok, parsed_sender} <- Instex.Struct.User.parse(sender),
-    {:ok, parsed_recipient} <- Instex.Struct.User.parse(recipient) do
-      {:ok, %__MODULE__{
-        message: parsed_message,
-        recipient: parsed_recipient,
-        sender: parsed_sender,
-        # TODO
-        timestamp: timestamp
-      }}
-
-    end
+  embedded_schema do
+    embeds_one :message, Instex.Struct.Message
+    embeds_one :sender, Instex.Struct.User
+    embeds_one :recipient, Instex.Struct.User
+    field :timestamp, :integer
   end
+
+  def changeset(schema, attrs) do
+    schema
+    |> cast(attrs, [:timestamp])
+    |> cast_embed(:message)
+    |> cast_embed(:sender)
+    |> cast_embed(:recipient)
+  end
+
 end

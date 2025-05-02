@@ -1,22 +1,15 @@
 defmodule Instex.Struct.Message do
-
-  defstruct [
-    mid: "",
-    text: "",
-  ]
-
-  @type t :: %__MODULE__{
-    mid: String.t(),
-    text: String.t(),
-  }
+  use Instex.Struct.Schema
 
 
-  @spec parse(map()) :: {:ok, __MODULE__.t()} | {:error, :invalid}
-  def parse(%{"mid" => mid, "text" => text} = map) do
-    {:ok, %__MODULE__{
-      mid: mid,
-      text: text
-    }}
+  embedded_schema do
+    field :mid, :string
+    field :text, :string
+  end
+
+  def changeset(schema, attrs) do
+    schema
+    |> cast(attrs, [:mid, :text])
   end
 
 end

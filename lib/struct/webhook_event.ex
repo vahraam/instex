@@ -1,25 +1,15 @@
 defmodule Instex.Struct.WebhookEvent do
+  use Instex.Struct.Schema
 
-  @type object :: nil | :instagram
+  embedded_schema do
+    field :object, Ecto.Enum, values: [:nil, :instagram]
+    embeds_many :entry, Instex.Struct.Entry
+  end
 
-  defstruct [
-    entry: [],
-    object: nil
-  ]
-
-  @type t :: %__MODULE__{
-    entry: [Instex.Struct.Entry.t()],
-    object: object()
-  }
-
-
-  @spec parse(map()) :: {:ok, __MODULE__.t()} | {:error, :invalid}
-  def parse(%{"entry" => entry, "object" => object}) do
-    with {:ok, parsed_entry} <- Instex.Struct.Entry.parse(entry) do
-      {:ok, %__MODULE__{
-        entry: parsed_entry,
-        object: String.to_atom(object)
-      }}
-    end
+  def builder(map) do
+    %__MODULE__{}
+    |> cast(map, [:object])
+    |> cast_embed(:entry)
+    |> apply_action(:build)
   end
 end

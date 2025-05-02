@@ -1,19 +1,13 @@
 defmodule Instex.Struct.User do
+  use Instex.Struct.Schema
 
+  embedded_schema do
+    field :id, :integer
+  end
 
-  defstruct [
-    id: 0,
-  ]
-
-  @type t :: %__MODULE__{
-    id: integer(),
-  }
-
-  @spec parse(map()) :: {:ok, __MODULE__.t()} | {:error, :invalid}
-  def parse(%{"id" => id}) do
-    {:ok, %__MODULE__{
-      id: String.to_integer(id)
-    }}
+  def changeset(schema, attrs) do
+    schema
+    |> cast(attrs, [:id])
   end
 
 end
