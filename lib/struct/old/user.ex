@@ -1,8 +1,8 @@
-defmodule Instex.Struct.User do
-  use Instex.Struct.Schema
+defmodule Instex.Struct.Old.User do
+  use Instex.Struct.Old.Schema
 
   embedded_schema do
-    field :id, :integer
+    field :id, :string
     field :username, :string
   end
 

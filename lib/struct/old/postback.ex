@@ -1,5 +1,5 @@
-defmodule Instex.Struct.Postback do
-  use Instex.Struct.Schema
+defmodule Instex.Struct.Old.Postback do
+  use Instex.Struct.Old.Schema
 
 
   embedded_schema do

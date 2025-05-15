@@ -1,5 +1,5 @@
-defmodule Instex.Struct.Referral do
-  use Instex.Struct.Schema
+defmodule Instex.Struct.Old.Referral do
+  use Instex.Struct.Old.Schema
 
   embedded_schema do
     field :ref, :string

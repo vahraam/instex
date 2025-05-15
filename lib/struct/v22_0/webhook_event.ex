@@ -1,9 +1,9 @@
-defmodule Instex.Struct.WebhookEvent do
-  use Instex.Struct.Schema
+defmodule Instex.Struct.V22_0.WebhookEvent do
+  use Instex.Struct.V22_0.Schema
 
   embedded_schema do
     field :object, Ecto.Enum, values: [:nil, :instagram]
-    embeds_many :entry, Instex.Struct.Entry
+    embeds_many :entry, Instex.Struct.V22_0.Entry
   end
 
   def builder(map) do

@@ -273,25 +273,29 @@ defmodule Instex.Webhook do
     #
 
 
-    # bot_routing_map = :persistent_term.get({Instex.Webhook, :bot_routing_map})
+    bot_routing_map = :persistent_term.get({Instex.Webhook, :bot_routing_map})
 
 
 
-    with {:read_update, {:ok, update, conn}} <- {:read_update, read_update(conn)} do
-        #  {:routing, {:ok, bot_dispatch_behaviour}} <- {:routing, Map.fetch(bot_routing_map, token)} do
+    with {:read_update, {:ok, update, conn}} <- {:read_update, read_update(conn)},
+         {:routing, {:ok, bot_dispatch_behaviour}} <- {:routing, Map.fetch(bot_routing_map, "token")} do
       # Logger.debug("received update: #{inspect(update)}", bot: inspect(bot_dispatch_behaviour))
-      # bot_dispatch_behaviour.dispatch_update(update, token)
 
 
+      # TODO. make better
       update
-      |> Instex.Struct.WebhookEvent.builder()
       |> dbg()
-
-
-
-
+      |> Instex.Struct.V22_0.WebhookEvent.builder()
+      |> dbg()
+      |> case do
+        {:ok, event} ->
+          bot_dispatch_behaviour.dispatch_update(event, "token")
+        {:error, reason} ->
+          Logger.warning("unhandled instagram webhook update", update: update)
+      end
 
       Plug.Conn.send_resp(conn, :ok, "")
+
     else
       # coveralls-ignore-start
 

@@ -1,5 +1,5 @@
-defmodule Instex.Struct.PassThreadControl do
-  use Instex.Struct.Schema
+defmodule Instex.Struct.Old.PassThreadControl do
+  use Instex.Struct.Old.Schema
 
   embedded_schema do
     field :previous_owner_app_id, :integer

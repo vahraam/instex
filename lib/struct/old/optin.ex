@@ -1,5 +1,5 @@
-defmodule Instex.Struct.Optin do
-  use Instex.Struct.Schema
+defmodule Instex.Struct.Old.Optin do
+  use Instex.Struct.Old.Schema
 
 
   embedded_schema do

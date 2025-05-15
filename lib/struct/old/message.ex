@@ -1,5 +1,5 @@
-defmodule Instex.Struct.Message do
-  use Instex.Struct.Schema
+defmodule Instex.Struct.Old.Message do
+  use Instex.Struct.Old.Schema
 
 
   embedded_schema do

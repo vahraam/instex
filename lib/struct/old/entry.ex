@@ -1,10 +1,10 @@
-defmodule Instex.Struct.Entry do
-  use Instex.Struct.Schema
+defmodule Instex.Struct.Old.Entry do
+  use Instex.Struct.Old.Schema
 
   embedded_schema do
     field :id, :integer
     field :time, :integer
-    embeds_many :changes, Instex.Struct.Change
+    embeds_many :changes, Instex.Struct.Old.Change
   end
 
 

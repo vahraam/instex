@@ -1,20 +1,13 @@
-defmodule Instex.Struct.Change.Value do
-  use Instex.Struct.Schema
+defmodule Instex.Struct.V22_0.Entry.Change.Value do
+  use Instex.Struct.V22_0.Schema
 
   embedded_schema do
-    embeds_one :message, Instex.Struct.Message
-    embeds_one :sender, Instex.Struct.User
-    embeds_one :recipient, Instex.Struct.User
-    embeds_one :read, Instex.Struct.Message
-    embeds_one :referral, Instex.Struct.Referral
-    embeds_one :postback, Instex.Struct.Postback
-    embeds_one :optin, Instex.Struct.Optin
-    embeds_one :pass_thread_control, Instex.Struct.PassThreadControl
-    embeds_one :reaction, Instex.Struct.Reaction
+    embeds_one :sender, Instex.Struct.V22_0.User
+    embeds_one :recipient, Instex.Struct.V22_0.User
     field :id, :integer
     field :text, :string
-    embeds_one :from, Instex.Struct.User
-    embeds_one :media, Instex.Struct.Media
+    embeds_one :from, Instex.Struct.V22_0.User
+    embeds_one :media, Instex.Struct.V22_0.Media
     field :parent_id, :integer
     field :timestamp, :integer
   end

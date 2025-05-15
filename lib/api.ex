@@ -100,4 +100,35 @@ defmodule Instex.Api do
         others
     end)
   end
+
+
+
+
+
+
+
+
+
+
+  @base_uri "https://graph.facebook.com"
+  @api_version "v22.0"
+
+  @access_token "EAAVr2VM9Gd8BO0sHeYbdq5NEWKZC4Lo5NsCZCDHtvGvOoZCZCFWJeFkVZCDdsQjvfnHOH0vCCsdFMEYdppncJA7r5uIWjuu91ZCj5H0fGunSx3Rw6ZCXHE4z5hDuENYoHHDzPTz1Toj72kZCZCk1Ig5XjubNUqjaPdP2C00EZAe8M0WN4a1KErm1P9LzUeAEYfKznoEcZAXrO4Yc6Fp0AOrJAZDZD"
+  @page_id "2621799018151135"
+
+
+  def send_message(user_platform_id, text) do
+
+    url = @base_uri <> "/" <> @api_version <> "/" <> @page_id <> "/messages"
+
+    Finch.build(:post, url, [], %{
+      recipient: %{id: user_platform_id},
+      messaging_type: "RESPONSE",
+      messages: %{text: text},
+      access_token: @access_token
+    } |> Jason.encode!())
+    |> dbg()
+    |> Finch.request(Backend.Finch)
+
+  end
 end
