@@ -24,6 +24,10 @@ defmodule Instex.WebServer.Bandit do
        port: port
      ]}
   end
+
+  def init(args) do
+    {:ok, args}
+  end
 end
 
 # coveralls-ignore-stop

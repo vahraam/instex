@@ -211,8 +211,6 @@ defmodule Instex.Webhook do
 
     children = bot_specs ++ webserver_specs
 
-    dbg(children)
-
     Supervisor.init(children, strategy: :one_for_one)
   end
 
@@ -281,12 +279,10 @@ defmodule Instex.Webhook do
          {:routing, {:ok, bot_dispatch_behaviour}} <- {:routing, Map.fetch(bot_routing_map, "token")} do
       # Logger.debug("received update: #{inspect(update)}", bot: inspect(bot_dispatch_behaviour))
 
+      :ok = bot_dispatch_behaviour.dispatch_update_raw(update, "token")
 
-      # TODO. make better
       update
-      |> dbg()
       |> Instex.Struct.V22_0.WebhookEvent.builder()
-      |> dbg()
       |> case do
         {:ok, event} ->
           bot_dispatch_behaviour.dispatch_update(event, "token")
@@ -336,31 +332,31 @@ defmodule Instex.Webhook do
   end
 end
 
-defmodule Instex.Webhook.Router do
-  @moduledoc false
+# defmodule Instex.Webhook.Router do
+#   @moduledoc false
 
-  require Logger
+#   require Logger
 
-  use Plug.Router, copy_opts_to_assign: :bot_routing_map
+#   use Plug.Router, copy_opts_to_assign: :bot_routing_map
 
-  plug :match
-  plug Plug.Parsers, parsers: [:json], pass: ["*/*"], json_decoder: Jason
-  plug :dispatch
+#   plug :match
+#   plug Plug.Parsers, parsers: [:json], pass: ["*/*"], json_decoder: Jason
+#   plug :dispatch
 
 
-  get "/__instagram_webhook__" do
-    Instex.Webhook.verify_webhook(conn)
-  end
+#   get "/__instagram_webhook__" do
+#     Instex.Webhook.verify_webhook(conn)
+#   end
 
-  post "/__instagram_webhook__" do
-    Instex.Webhook.events(conn)
-  end
+#   post "/__instagram_webhook__" do
+#     Instex.Webhook.events(conn)
+#   end
 
-  # coveralls-ignore-start
+#   # coveralls-ignore-start
 
-  match _ do
-    Plug.Conn.send_resp(conn, :not_found, "")
-  end
+#   match _ do
+#     Plug.Conn.send_resp(conn, :not_found, "")
+#   end
 
-  # coveralls-ignore-stop
-end
+#   # coveralls-ignore-stop
+# end

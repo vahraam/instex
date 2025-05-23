@@ -110,24 +110,23 @@ defmodule Instex.Api do
 
 
 
-  @base_uri "https://graph.facebook.com"
+  @base_uri "https://graph.instagram.com"
   @api_version "v22.0"
 
-  @access_token "EAAVr2VM9Gd8BO0sHeYbdq5NEWKZC4Lo5NsCZCDHtvGvOoZCZCFWJeFkVZCDdsQjvfnHOH0vCCsdFMEYdppncJA7r5uIWjuu91ZCj5H0fGunSx3Rw6ZCXHE4z5hDuENYoHHDzPTz1Toj72kZCZCk1Ig5XjubNUqjaPdP2C00EZAe8M0WN4a1KErm1P9LzUeAEYfKznoEcZAXrO4Yc6Fp0AOrJAZDZD"
-  @page_id "2621799018151135"
+  @access_token "IGAAlQgycmPN9BZAE9ZAUjF0REdQRGxCUWlkV2dMZAlR5WWtjTHJEUWUxVUJGalF5a1BpYXkwUllNemUzNVRnajc4ZAXl5WW4tSGlwNVNybV9fNDhJMjdDUEYzRS1XR1ZAmOHlLLTZAvVXY4alNicWpJVk9ERkM5cTVuRkJyX3BXRWFUawZDZD"
 
 
   def send_message(user_platform_id, text) do
 
-    url = @base_uri <> "/" <> @api_version <> "/" <> @page_id <> "/messages"
+    url = @base_uri <> "/" <> @api_version <>  "/me/messages"
 
-    Finch.build(:post, url, [], %{
+    Finch.build(:post, url, [
+      {"Authorization", "Bearer " <> @access_token},
+      {"content-type", "application/json"}
+      ], %{
       recipient: %{id: user_platform_id},
-      messaging_type: "RESPONSE",
-      messages: %{text: text},
-      access_token: @access_token
+      message: %{text: text},
     } |> Jason.encode!())
-    |> dbg()
     |> Finch.request(Backend.Finch)
 
   end

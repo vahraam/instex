@@ -4,8 +4,8 @@ defmodule Instex.Client do
   @type file_path :: String.t()
   @type body :: map() | Tesla.Multipart.t()
 
-  @api_base_url Application.compile_env(:telegram, :api_base_url, "https://api.telegram.org")
-  @api_max_retries Application.compile_env(:telegram, :api_max_retries, 5)
+  @api_base_url Application.compile_env(:instex, :api_base_url, "https://graph.instagram.com")
+  @api_max_retries Application.compile_env(:instex, :api_max_retries, 5)
 
   use Tesla, only: [:get, :post], docs: false
 
@@ -29,19 +29,11 @@ defmodule Instex.Client do
     end
 
   @doc false
-  @spec request(Instex.Types.token(), Instex.Types.method(), body()) :: {:ok, term()} | {:error, term()}
-  def request(token, method, body) do
-    "/bot#{token}/#{method}"
+  @spec request(String.t(), Instex.Types.token(), Instex.Types.method(), body()) :: {:ok, term()} | {:error, term()}
+  def request(path, token, method, body) do
+    path
     |> post(body)
     |> process_response()
-  end
-
-  @doc false
-  @spec file(Instex.Types.token(), file_path()) :: {:ok, Tesla.Env.body()} | {:error, term()}
-  def file(token, file_path) do
-    "/file/bot#{token}/#{file_path}"
-    |> get()
-    |> process_file_response()
   end
 
   defp process_response({:ok, env}) do
@@ -61,17 +53,4 @@ defmodule Instex.Client do
     {:error, reason}
   end
 
-  defp process_file_response({:ok, env}) do
-    case env.status do
-      200 ->
-        {:ok, env.body}
-
-      status ->
-        {:error, {:http_error, status}}
-    end
-  end
-
-  defp process_file_response({:error, reason}) do
-    {:error, reason}
-  end
 end

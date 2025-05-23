@@ -36,6 +36,7 @@ defmodule Instex.Bot do
   The function receives the telegram update event.
   """
   @callback handle_update(update :: Types.update(), token :: Types.token()) :: any()
+  @callback handle_update_raw(update :: Types.update(), token :: Types.token()) :: any()
 
   @doc false
   defmacro __using__(_use_opts) do
@@ -60,6 +61,21 @@ defmodule Instex.Bot do
 
         supervisor_name
         |> Task.Supervisor.start_child(__MODULE__, :handle_update, [update, token])
+        |> case do
+          {:ok, _server} ->
+            :ok
+
+          {:error, :max_children} ->
+            Logger.info("Reached max children, update dropped", bot: __MODULE__, token: token)
+        end
+      end
+
+      @impl Instex.Bot.Dispatch
+      def dispatch_update_raw(update, token) do
+        supervisor_name = Utils.name(__MODULE__, token)
+
+        supervisor_name
+        |> Task.Supervisor.start_child(__MODULE__, :handle_update_raw, [update, token])
         |> case do
           {:ok, _server} ->
             :ok
