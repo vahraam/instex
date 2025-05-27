@@ -282,7 +282,7 @@ defmodule Instex.Webhook do
       :ok = bot_dispatch_behaviour.dispatch_update_raw(update, "token")
 
       update
-      |> Instex.Struct.V22_0.WebhookEvent.builder()
+      |> Instex.Struct.V22_0.WebhookEntry.builder()
       |> case do
         {:ok, event} ->
           bot_dispatch_behaviour.dispatch_update(event, "token")

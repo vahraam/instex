@@ -1,4 +1,4 @@
-defmodule Instex.Struct.V22_0.WebhookEvent do
+defmodule Instex.Struct.V22_0.WebhookEntry do
   use Instex.Struct.V22_0.Schema
 
   embedded_schema do
@@ -10,6 +10,6 @@ defmodule Instex.Struct.V22_0.WebhookEvent do
     %__MODULE__{}
     |> cast(map, [:object])
     |> cast_embed(:entry)
-    |> apply_action(:build)
+    |> apply_action!(:build)
   end
 end

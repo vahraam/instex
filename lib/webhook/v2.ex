@@ -39,20 +39,11 @@ defmodule Instex.Webhook.V2 do
     end
   end
 
-  def events(%Plug.Conn{assigns: %{__opts__: %{id: id, callback_module: callback_module}}} = conn) do
+  def events(%Plug.Conn{assigns: %{__opts__: %{callback_module: callback_module}}} = conn) do
     with {:read_update, {:ok, update, conn}} <- {:read_update, read_update(conn)} do
-      :ok = callback_module.dispatch_update_raw(id, update)
-      update
-      |> Instex.Struct.V22_0.WebhookEvent.builder()
-      |> case do
-        {:ok, event} ->
-          callback_module.dispatch_update(id, event)
-        {:error, reason} ->
-          Logger.warning("unhandled instagram webhook update", update: update)
-      end
+      :ok = callback_module.dispatch_update_raw(update)
 
       Plug.Conn.send_resp(conn, :ok, "")
-
     else
       # coveralls-ignore-start
 
@@ -73,7 +64,6 @@ defmodule Instex.Webhook.V2 do
 
   def verify_webhook(%Plug.Conn{} = conn) do
     Plug.Conn.send_resp(conn, :ok, "")
-    |> dbg()
   end
 
   # coveralls-ignore-start

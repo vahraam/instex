@@ -7,7 +7,6 @@ defmodule Instex.Webhook.Router do
 
   def init(opts) do
     opts
-    |> dbg()
   end
 
   plug :match

@@ -110,24 +110,8 @@ defmodule Instex.Api do
 
 
 
-  @base_uri "https://graph.instagram.com"
-  @api_version "v22.0"
-
-  @access_token "IGAAlQgycmPN9BZAE9ZAUjF0REdQRGxCUWlkV2dMZAlR5WWtjTHJEUWUxVUJGalF5a1BpYXkwUllNemUzNVRnajc4ZAXl5WW4tSGlwNVNybV9fNDhJMjdDUEYzRS1XR1ZAmOHlLLTZAvVXY4alNicWpJVk9ERkM5cTVuRkJyX3BXRWFUawZDZD"
 
 
-  def send_message(user_platform_id, text) do
 
-    url = @base_uri <> "/" <> @api_version <>  "/me/messages"
 
-    Finch.build(:post, url, [
-      {"Authorization", "Bearer " <> @access_token},
-      {"content-type", "application/json"}
-      ], %{
-      recipient: %{id: user_platform_id},
-      message: %{text: text},
-    } |> Jason.encode!())
-    |> Finch.request(Backend.Finch)
-
-  end
 end

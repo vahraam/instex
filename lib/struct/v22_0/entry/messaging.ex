@@ -26,7 +26,7 @@ defmodule Instex.Struct.V22_0.Entry.Messaging do
     embeds_one :referral, Instex.Struct.V22_0.Entry.Messaging.Referral
     embeds_one :postback, Instex.Struct.V22_0.Entry.Messaging.Postback
     embeds_one :reaction, Instex.Struct.V22_0.Entry.Messaging.Reaction
-    field :id, :integer
+    field :id, :string
     field :text, :string
     embeds_one :from, Instex.Struct.V22_0.User
     embeds_one :media, Instex.Struct.V22_0.Media

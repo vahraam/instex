@@ -4,6 +4,7 @@ defmodule Instex.Struct.V22_0.Entry.Messaging.Message do
   embedded_schema do
     field :mid, :string
     field :text, :string
+    field :is_deleted, :boolean
     embeds_one :quick_reply, Instex.Struct.V22_0.Entry.Messaging.Message.QuickReply
     embeds_one :reply_to, Instex.Struct.V22_0.Entry.Messaging.Message
     embeds_many :attachments, Instex.Struct.V22_0.Entry.Messaging.Message.Attachment

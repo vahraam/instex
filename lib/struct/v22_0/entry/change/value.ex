@@ -4,7 +4,8 @@ defmodule Instex.Struct.V22_0.Entry.Change.Value do
   embedded_schema do
     embeds_one :sender, Instex.Struct.V22_0.User
     embeds_one :recipient, Instex.Struct.V22_0.User
-    field :id, :integer
+    embeds_one :referral, Instex.Struct.V22_0.Entry.Messaging.Referral
+    field :id, :string
     field :text, :string
     embeds_one :from, Instex.Struct.V22_0.User
     embeds_one :media, Instex.Struct.V22_0.Media
