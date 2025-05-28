@@ -45,14 +45,7 @@ defmodule Instex.Webhook.Router do
 
 
   def oauth(conn, params) do
-    dbg(conn)
-    dbg(params)
     Plug.Conn.send_resp(conn, :ok, "")
-  end
-
-  def test(conn, opts) do
-    dbg(conn)
-    dbg(opts)
   end
 
 end
