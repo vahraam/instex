@@ -52,5 +52,4 @@ defmodule Instex.Client do
   defp process_response({:error, reason}) do
     {:error, reason}
   end
-
 end

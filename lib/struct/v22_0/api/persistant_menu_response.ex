@@ -4,8 +4,6 @@ defmodule Instex.Struct.V22_0.API.PersistentMenuResponse do
   @derive {Jason.Encoder, only: [:result]}
 
   embedded_schema do
-    field :result, Ecto.Enum, values: [:success]
+    field(:result, Ecto.Enum, values: [:success])
   end
-
-
 end

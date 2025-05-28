@@ -11,12 +11,12 @@ defmodule Instex.Struct.V22_0.Entry.Change do
     :messaging_postbacks,
     :messaging_referral,
     :messaging_seen,
-    :standby,
+    :standby
   ]
 
   embedded_schema do
-    field :field, Ecto.Enum, values: @change_types
-    embeds_one :value, Instex.Struct.V22_0.Entry.Change.Value
+    field(:field, Ecto.Enum, values: @change_types)
+    embeds_one(:value, Instex.Struct.V22_0.Entry.Change.Value)
   end
 
   def changeset(schema, attrs) do
@@ -66,8 +66,6 @@ defmodule Instex.Struct.V22_0.Entry.Change do
   end
 
   def handle_value(%Ecto.Changeset{changes: %{field: _}} = ch) do
-
     ch
   end
-
 end

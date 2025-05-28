@@ -174,8 +174,6 @@ defmodule Instex.Webhook do
         {token, bot_behaviour_mod}
       end)
 
-
-
     :persistent_term.put({__MODULE__, :bot_routing_map}, bot_routing_map)
 
     bot_specs
@@ -241,7 +239,6 @@ defmodule Instex.Webhook do
   """
   @spec post_webhook(Plug.Conn.t(), Types.token()) :: Plug.Conn.t()
   def post_webhook(%Plug.Conn{} = conn, token) do
-
     bot_routing_map = :persistent_term.get({Instex.Webhook, :bot_routing_map})
 
     with {:read_update, {:ok, update, conn}} <- {:read_update, read_update(conn)},
@@ -262,18 +259,13 @@ defmodule Instex.Webhook do
     end
   end
 
-
   def events(%Plug.Conn{params: params} = conn) do
-
     # Instex.Webhook.Parser.parse_webhook_entry(params)
 
     # Plug.Conn.send_resp(conn, :ok, "")
     #
 
-
     bot_routing_map = :persistent_term.get({Instex.Webhook, :bot_routing_map})
-
-
 
     with {:read_update, {:ok, update, conn}} <- {:read_update, read_update(conn)},
          {:routing, {:ok, bot_dispatch_behaviour}} <- {:routing, Map.fetch(bot_routing_map, "token")} do
@@ -286,12 +278,12 @@ defmodule Instex.Webhook do
       |> case do
         {:ok, event} ->
           bot_dispatch_behaviour.dispatch_update(event, "token")
+
         {:error, reason} ->
           Logger.warning("unhandled instagram webhook update", update: update)
       end
 
       Plug.Conn.send_resp(conn, :ok, "")
-
     else
       # coveralls-ignore-start
 
@@ -303,7 +295,6 @@ defmodule Instex.Webhook do
 
         # coveralls-ignore-stop
     end
-
   end
 
   def verify_webhook(%Plug.Conn{params: %{"hub.challenge" => challenge_code} = _params} = conn) do
@@ -342,7 +333,6 @@ end
 #   plug :match
 #   plug Plug.Parsers, parsers: [:json], pass: ["*/*"], json_decoder: Jason
 #   plug :dispatch
-
 
 #   get "/__instagram_webhook__" do
 #     Instex.Webhook.verify_webhook(conn)

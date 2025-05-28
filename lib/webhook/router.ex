@@ -13,7 +13,6 @@ defmodule Instex.Webhook.Router do
   plug Plug.Parsers, parsers: [:json], pass: ["*/*"], json_decoder: Jason
   plug :dispatch
 
-
   get "/__instagram_webhook__" do
     Instex.Webhook.V2.verify_webhook(conn)
   end
@@ -27,7 +26,6 @@ defmodule Instex.Webhook.Router do
   end
 
   # coveralls-ignore-start
-
 
   get "/test" do
     __MODULE__.test(conn, opts)
@@ -43,9 +41,7 @@ defmodule Instex.Webhook.Router do
 
   # coveralls-ignore-stop
 
-
   def oauth(conn, params) do
     Plug.Conn.send_resp(conn, :ok, "")
   end
-
 end

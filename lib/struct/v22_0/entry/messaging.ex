@@ -1,7 +1,6 @@
 defmodule Instex.Struct.V22_0.Entry.Messaging do
   use Instex.Struct.V22_0.Schema
 
-
   @change_types [
     :comments,
     :live_comments,
@@ -12,27 +11,26 @@ defmodule Instex.Struct.V22_0.Entry.Messaging do
     :messaging_postbacks,
     :messaging_referral,
     :messaging_seen,
-    :standby,
+    :standby
   ]
 
-
   embedded_schema do
-    field :type, Ecto.Enum, values: @change_types
-    field :field, :string
-    embeds_one :message, Instex.Struct.V22_0.Entry.Messaging.Message
-    embeds_one :sender, Instex.Struct.V22_0.User
-    embeds_one :recipient, Instex.Struct.V22_0.User
-    embeds_one :read, Instex.Struct.V22_0.Entry.Messaging.Message
-    embeds_one :referral, Instex.Struct.V22_0.Entry.Messaging.Referral
-    embeds_one :postback, Instex.Struct.V22_0.Entry.Messaging.Postback
-    embeds_one :reaction, Instex.Struct.V22_0.Entry.Messaging.Reaction
-    field :id, :string
-    field :text, :string
-    embeds_one :from, Instex.Struct.V22_0.User
-    embeds_one :media, Instex.Struct.V22_0.Media
-    field :mid, :string
-    field :parent_id, :integer
-    field :timestamp, :integer
+    field(:type, Ecto.Enum, values: @change_types)
+    field(:field, :string)
+    embeds_one(:message, Instex.Struct.V22_0.Entry.Messaging.Message)
+    embeds_one(:sender, Instex.Struct.V22_0.User)
+    embeds_one(:recipient, Instex.Struct.V22_0.User)
+    embeds_one(:read, Instex.Struct.V22_0.Entry.Messaging.Message)
+    embeds_one(:referral, Instex.Struct.V22_0.Entry.Messaging.Referral)
+    embeds_one(:postback, Instex.Struct.V22_0.Entry.Messaging.Postback)
+    embeds_one(:reaction, Instex.Struct.V22_0.Entry.Messaging.Reaction)
+    field(:id, :string)
+    field(:text, :string)
+    embeds_one(:from, Instex.Struct.V22_0.User)
+    embeds_one(:media, Instex.Struct.V22_0.Media)
+    field(:mid, :string)
+    field(:parent_id, :integer)
+    field(:timestamp, :integer)
   end
 
   def changeset(schema, attrs) do
@@ -74,5 +72,4 @@ defmodule Instex.Struct.V22_0.Entry.Messaging do
     changeset
     |> put_change(:type, :messaging_referral)
   end
-
 end

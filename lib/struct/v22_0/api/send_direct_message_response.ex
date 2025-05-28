@@ -4,8 +4,7 @@ defmodule Instex.Struct.V22_0.API.SendDirectMessageResponse do
   @derive {Jason.Encoder, only: [:recipient_id, :message_id]}
 
   embedded_schema do
-    field :recipient_id, :string
-    field :message_id, :string
+    field(:recipient_id, :string)
+    field(:message_id, :string)
   end
-
 end

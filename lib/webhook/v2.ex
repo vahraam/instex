@@ -1,5 +1,4 @@
 defmodule Instex.Webhook.V2 do
-
   alias Instex.Types
   import Instex.Utils, only: [retry: 1]
   require Logger
@@ -13,12 +12,11 @@ defmodule Instex.Webhook.V2 do
 
   @default_config [
     scheme: @default_scheme,
-    port: @default_port,
+    port: @default_port
   ]
 
   @spec post_webhook(Plug.Conn.t(), Types.token()) :: Plug.Conn.t()
   def post_webhook(%Plug.Conn{} = conn, token) do
-
     bot_routing_map = :persistent_term.get({Instex.Webhook, :bot_routing_map})
 
     with {:read_update, {:ok, update, conn}} <- {:read_update, read_update(conn)},
@@ -55,7 +53,6 @@ defmodule Instex.Webhook.V2 do
 
         # coveralls-ignore-stop
     end
-
   end
 
   def verify_webhook(%Plug.Conn{params: %{"hub.challenge" => challenge_code} = _params} = conn) do
