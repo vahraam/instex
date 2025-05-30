@@ -11,21 +11,21 @@ defmodule Instex.V22_0.Api do
   @base_uri "https://graph.instagram.com"
   @api_version "v22.0"
 
-  @spec create_ice_breakers(access_token :: String.t(), schema :: IceBreakerRequest.t()) ::
+  @spec create_ice_breakers(access_token :: String.t(), schema :: IceBreakerRequest.t(), finch :: module()) ::
           {:ok, any()} | {:error, reason :: atom()}
   def create_ice_breakers(access_token, schema, finch) do
     url = @base_uri <> "/" <> @api_version <> "/me/messenger_profile"
     do_request(finch, url, access_token, schema, IceBreakerResponse)
   end
 
-  @spec create_persistent_menu(access_token :: String.t(), schema :: PersistentMenuRequest.t()) ::
+  @spec create_persistent_menu(access_token :: String.t(), schema :: PersistentMenuRequest.t(), finch :: module()) ::
           {:ok, any()} | {:error, reason :: atom()}
   def create_persistent_menu(access_token, schema, finch) do
     url = @base_uri <> "/" <> @api_version <> "/me/messenger_profile"
     do_request(finch, url, access_token, schema, PersistentMenuResponse)
   end
 
-  @spec send_direct_message(access_token :: String.t(), schema :: SendDirectMessageRequest.t()) ::
+  @spec send_direct_message(access_token :: String.t(), schema :: SendDirectMessageRequest.t(), finch :: module()) ::
           {:ok, SendDirectMessageResponse.t()} | {:error, reason :: atom()}
   def send_direct_message(access_token, schema, finch) do
     url = @base_uri <> "/" <> @api_version <> "/me/messages"
